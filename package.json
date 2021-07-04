@@ -8,11 +8,19 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "css-loader": "^5.2.6",
+    "imagesloaded": "^4.1.4",
+    "lightgallery": "^2.1.5",
+    "masonry-layout": "^4.2.2",
+    "normalize.css": "^8.0.1",
+    "style-loader": "^2.0.0",
     "vue": "^3.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0"
+    "@vue/compiler-sfc": "^3.0.0",
+    "sass": "^1.35.1",
+    "sass-loader": "^10.2.0"
   }
 }
