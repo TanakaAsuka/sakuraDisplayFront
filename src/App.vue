@@ -1,24 +1,21 @@
 <template>
   <Header/>
-  <Gallery/>
+  <router-view></router-view>
 </template>
 
 <script>
 
-import Gallery from './views/gallery/Gallery'
+// import Gallery from './views/gallery/Gallery'
 import Header from './components/header/Header.vue'
 
 export default {
   name: 'App',
   components: {
-    Gallery,Header
+    Header
   }
 }
 </script>
 
 <style>
 
-#app {
-  width: 100%;
-}
 </style>

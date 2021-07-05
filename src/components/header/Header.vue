@@ -1,6 +1,14 @@
 <template>
     <div class="header">
-        樱花廊
+
+        <router-link to="/">
+                 樱花廊
+        </router-link>
+
+        <router-link to="/about">
+                 关于
+        </router-link>
+        
     </div>
 </template>
 
@@ -24,5 +32,13 @@ export default {
         color: white;
         padding-left: .25rem;
         margin-bottom: .2rem;
+
+        a{
+            color: white;
+            margin: 0 10px;
+        }
+        .router-link-exact-active{
+            color: orange;
+        }
     }
 </style>
