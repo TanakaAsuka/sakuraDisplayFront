@@ -1,7 +1,7 @@
 <template>
   <div class="lightgallery-wrap">
     <lightgallery
-      v-if="imgList.length>0"
+      v-if="imgList?.length > 0"
       :settings="{ speed: 500, plugins: plugins }"
       :onInit="onInit"
       :onBeforeSlide="onBeforeSlide"
@@ -151,22 +151,24 @@ export default {
   },
   updated() {
     // this.msnry.layout();
+    this.$nextTick(() => {
+      var grid = document.querySelector(".grid");
+      console.log(grid);
+      const msny = new Masonry(grid, {
+        itemSelector: ".grid-item",
+        // columnWidth: 35,
+        horizontalOrder: true,
+      });
+
+      let imgLoad = imagesLoaded(grid, function (instance) {});
+      imgLoad.on("progress", function () {
+        console.log("all images are loaded");
+        msny.layout();
+      });
+    });
   },
 
   mounted() {
-    var grid = this.$refs.grid;
-    const msny = new Masonry(grid, {
-      itemSelector: ".grid-item",
-      // columnWidth: 35,
-      horizontalOrder: true,
-    });
-
-    let imgLoad = imagesLoaded(grid, function (instance) {});
-    imgLoad.on("progress", function () {
-      console.log("all images are loaded");
-      msny.layout();
-    });
-
     console.log("mounted");
     // this.$nextTick().then(function () {});
   },
