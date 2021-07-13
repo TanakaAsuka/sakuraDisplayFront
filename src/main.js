@@ -4,9 +4,13 @@ import App from './App.vue'
 import "./base/base.scss"
 import "normalize.css";
 import router from './router'
+import "vue-toastification/dist/index.css";
+import Toast from "vue-toastification";
 
-// import "lightgallery/lg-autoplay.css";
 
-let app=createApp(App).use(router)
+
+let app=createApp(App)
+app.use(router)
+app.use(Toast)
 
 app.mount('#app')

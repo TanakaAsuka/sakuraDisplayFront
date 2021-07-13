@@ -122,6 +122,7 @@
 <script>
 import axios from "axios"
 import qs from "qs"
+import { useToast } from "vue-toastification";
 export default {
   data() {
     return {
@@ -140,6 +141,8 @@ export default {
     handleSubmitRegister(){
 
       // 验证用户名密码
+      const toast=useToast()
+      toast("你好!")
 
       axios.post('http://127.0.0.1:3000/register',qs.stringify({
         nickname:this.nickname,
@@ -148,6 +151,14 @@ export default {
       }))
       .then(res => {
         console.log(res)
+
+        const {err,msg}=res.data
+
+        if(err==0){
+          // 注册成功
+          this.handleLogin()
+          alert(msg)
+        }
       })
       .catch(err => {
         console.error(err); 
