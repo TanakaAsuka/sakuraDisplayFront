@@ -31,7 +31,7 @@ export default {
         align-items: center;
         color: white;
         padding-left: .25rem;
-        margin-bottom: .2rem;
+        // margin-bottom: .2rem;
 
         a{
             color: white;
