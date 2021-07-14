@@ -11,6 +11,11 @@ import Toast from "vue-toastification";
 
 let app=createApp(App)
 app.use(router)
-app.use(Toast)
+app.use(Toast,{
+  position:"top-right",
+  transition: "Vue-Toastification__fade",
+  timeout: 8000,
+  maxToasts: 6,
+})
 
 app.mount('#app')

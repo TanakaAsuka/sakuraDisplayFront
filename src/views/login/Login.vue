@@ -39,8 +39,8 @@
             <fieldset class="forms_fieldset">
               <div class="forms_field">
                 <input
-                  type="email"
-                  placeholder="邮箱"
+                  type="text"
+                  placeholder="用户名"
                   class="forms_field-input"
                   required
                   autofocus
@@ -110,7 +110,12 @@
               </div>
             </fieldset>
             <div class="forms_buttons">
-              <input type="button" value="注册" @click="handleSubmitRegister" class="forms_buttons-action" />
+              <input
+                type="button"
+                value="注册"
+                @click="handleSubmitRegister"
+                class="forms_buttons-action"
+              />
             </div>
           </form>
         </div>
@@ -120,16 +125,17 @@
 </template>
 
 <script>
-import axios from "axios"
-import qs from "qs"
+import axios from "axios";
+import qs from "qs";
 import { useToast } from "vue-toastification";
+import common from "../../utils/common"
 export default {
   data() {
     return {
-      nickname:"",
-      username:"",
-      password:"",
-      repeatpass:""
+      nickname: "",
+      username: "",
+      password: "",
+      repeatpass: "",
     };
   },
   methods: {
@@ -138,31 +144,58 @@ export default {
       userForms.classList.remove("bounceRight");
       userForms.classList.add("bounceLeft");
     },
-    handleSubmitRegister(){
+    handleSubmitRegister() {
+      const toast = useToast();
+      // 验证昵称用户名密码
+      for(let i in common){
+        console.log(i)
+        let reg=new RegExp(common[i])
+        let result=reg.test(this[i])
 
-      // 验证用户名密码
-      const toast=useToast()
-      toast("你好!")
-
-      axios.post('http://127.0.0.1:3000/register',qs.stringify({
-        nickname:this.nickname,
-        username:this.username,
-        password:this.password
-      }))
-      .then(res => {
-        console.log(res)
-
-        const {err,msg}=res.data
-
-        if(err==0){
-          // 注册成功
-          this.handleLogin()
-          alert(msg)
+        if(!result){
+          if(i=='username'){
+            toast.error("请确认用户名数字字母下划线或中文组成，且不超过16位!");
+          }
+          if(i=='nickname'){
+            toast.error("请确认昵称由数字字母下划线或中文组成，不包含特殊字符!");
+          }
+          if(i=='password'){
+            toast.error("请确认密码长度在6~18之间，只能包含字母、数字和下划线!");
+          }
+          
+          return
         }
-      })
-      .catch(err => {
-        console.error(err); 
-      })
+        if(this.repeatpass!=this.password){
+          toast.error("确认密码和密码不一致！");
+          return
+        }
+
+      }
+      // 验证通过，提交请求
+      axios
+        .post(
+          "http://127.0.0.1:3000/register",
+          qs.stringify({
+            nickname: this.nickname,
+            username: this.username,
+            password: this.password,
+          })
+        )
+        .then((res) => {
+          console.log(res);
+          const { err, msg } = res.data;
+          if (err == 0) {
+            // 注册成功
+            this.handleLogin();
+            toast.success("注册成功，请登录!");
+          } else{
+            toast.error(msg);
+          }
+        })
+        .catch((err) => {
+          toast.error("发送请求出错，请检查网络后重试");
+          console.error(err);
+        });
     },
     handleLogin() {
       let userForms = this.$refs.user_options_forms;
@@ -614,7 +647,7 @@ input::placeholder {
  * */
 @media screen and (max-width: 990px) {
   .user_options-forms {
-    min-height: 350px;
+    min-height: 395px;
   }
   .user_options-forms .forms_buttons {
     flex-direction: column;

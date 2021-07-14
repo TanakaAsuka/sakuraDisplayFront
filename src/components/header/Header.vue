@@ -26,7 +26,7 @@ export default {
     .header{
         width: 100%;
         height: .5rem;
-        background: #333;
+        background: rgba(34,34,34,0.85);
         display: flex;
         align-items: center;
         color: white;
