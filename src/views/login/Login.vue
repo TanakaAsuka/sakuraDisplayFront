@@ -39,19 +39,23 @@
             <fieldset class="forms_fieldset">
               <div class="forms_field">
                 <input
+                  v-model="loginusername"
                   type="text"
                   placeholder="用户名"
                   class="forms_field-input"
                   required
                   autofocus
+                  name="loginusername"
                 />
               </div>
               <div class="forms_field">
                 <input
+                  v-model="loginpassword"
                   type="password"
                   placeholder="密码"
                   class="forms_field-input"
                   required
+                  name="loginpassword"
                 />
               </div>
             </fieldset>
@@ -59,7 +63,9 @@
               <button type="button" class="forms_buttons-forgot">
                 忘记密码?
               </button>
-              <input type="submit" value="登录" class="forms_buttons-action" />
+              <div @click="handleSubmitLogin" class="forms_buttons-action">
+                登录
+              </div>
             </div>
           </form>
         </div>
@@ -128,7 +134,7 @@
 import axios from "axios";
 import qs from "qs";
 import { useToast } from "vue-toastification";
-import common from "../../utils/common"
+import common from "../../utils/common";
 export default {
   data() {
     return {
@@ -136,6 +142,8 @@ export default {
       username: "",
       password: "",
       repeatpass: "",
+      loginusername: "",
+      loginpassword: "",
     };
   },
   methods: {
@@ -147,29 +155,32 @@ export default {
     handleSubmitRegister() {
       const toast = useToast();
       // 验证昵称用户名密码
-      for(let i in common){
-        console.log(i)
-        let reg=new RegExp(common[i])
-        let result=reg.test(this[i])
+      for (let i in common) {
+        console.log(i);
+        let reg = new RegExp(common[i]);
+        let result = reg.test(this[i]);
 
-        if(!result){
-          if(i=='username'){
+        if (!result) {
+          if (i == "username") {
             toast.error("请确认用户名数字字母下划线或中文组成，且不超过16位!");
           }
-          if(i=='nickname'){
-            toast.error("请确认昵称由数字字母下划线或中文组成，不包含特殊字符!");
+          if (i == "nickname") {
+            toast.error(
+              "请确认昵称由数字字母下划线或中文组成，不包含特殊字符!"
+            );
           }
-          if(i=='password'){
-            toast.error("请确认密码长度在6~18之间，只能包含字母、数字和下划线!");
+          if (i == "password") {
+            toast.error(
+              "请确认密码长度在6~18之间，只能包含字母、数字和下划线!"
+            );
           }
-          
-          return
-        }
-        if(this.repeatpass!=this.password){
-          toast.error("确认密码和密码不一致！");
-          return
-        }
 
+          return;
+        }
+        if (this.repeatpass != this.password) {
+          toast.error("确认密码和密码不一致！");
+          return;
+        }
       }
       // 验证通过，提交请求
       axios
@@ -188,7 +199,7 @@ export default {
             // 注册成功
             this.handleLogin();
             toast.success("注册成功，请登录!");
-          } else{
+          } else {
             toast.error(msg);
           }
         })
@@ -201,6 +212,50 @@ export default {
       let userForms = this.$refs.user_options_forms;
       userForms.classList.remove("bounceLeft");
       userForms.classList.add("bounceRight");
+    },
+    handleSubmitLogin() {
+      const toast = useToast();
+      // 验证昵称用户名密码
+      let reg = new RegExp(common["username"]);
+      let result = reg.test(this.loginusername);
+      if (!result) {
+        toast.error("请确认用户名数字字母下划线或中文组成，且不超过16位!");
+        return;
+      }
+      reg = new RegExp(common["password"]);
+      result = reg.test(this.loginpassword);
+      if (!result) {
+        toast.error("请确认密码长度在6~18之间，只能包含字母、数字和下划线!");
+        return;
+      }
+      // 验证通过
+      axios
+        .get(
+          "http://127.0.0.1:3000/login",{
+            params: {
+              username: this.loginusername,
+              password: this.loginpassword,
+            }
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          let {err,msg}=res.data
+
+          if(err==0){
+            toast.success("登录成功",{
+              timeout: 2000
+            });
+            this.$router.replace('/')
+            
+          }else{
+            toast.error(msg);
+          }
+        })
+        .catch((err) => {
+          toast.error("登录出错，请检查网络后重试");
+          console.error(err);
+        });
     },
   },
 };
