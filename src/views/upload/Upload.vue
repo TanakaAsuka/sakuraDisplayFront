@@ -10,6 +10,7 @@
       v-bind:files="myFiles"
       v-on:init="handleFilePondInit"
       server="/upload"
+      :captureMethod="null"
     />
   </div>
 </template>
