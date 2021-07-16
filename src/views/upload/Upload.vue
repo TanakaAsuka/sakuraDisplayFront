@@ -16,6 +16,7 @@
 </template>
 
 <script>
+
 // Import FilePond
 import vueFilePond from "vue-filepond";
 
@@ -33,6 +34,8 @@ const FilePond = vueFilePond(
   FilePondPluginImagePreview
 );
 import { ref, onMounted } from "vue";
+
+
 export default {
   name: "upload",
   data: () => ({ myFiles: [] }),

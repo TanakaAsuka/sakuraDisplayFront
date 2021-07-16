@@ -243,10 +243,10 @@ export default {
           let {err,msg}=res.data
 
           if(err==0){
-            toast.success("登录成功",{
+            toast.success(msg,{
               timeout: 2000
             });
-            this.$router.replace('/')
+            this.$router.push('/')
             
           }else{
             toast.error(msg);

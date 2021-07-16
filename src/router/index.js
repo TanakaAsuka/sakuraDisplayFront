@@ -1,5 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/gallery/Gallery.vue'
+import axios from "axios"
+import { useToast } from "vue-toastification";
+const toast=useToast()
 
 const routes = [
   {
@@ -21,6 +24,28 @@ const routes = [
     // 如果不是管理员，则跳回首页
     // 如果是管理员，则进入路由
     path: '/upload',
+    beforeEnter: (to, from, next) => {
+      // ...
+      axios.get("http://127.0.0.1:3000/upload")
+      .then(res => {
+        console.log(res)
+        let {err,msg}=res.data
+        if(err==0){
+          next()
+        }else{
+          next({
+            name:"Login"
+          })
+          toast.warning(msg)
+        }
+
+        
+
+      })
+      .catch(err => {
+        console.error(err); 
+      })
+    },
     name: 'Upload',
     // route level code-splitting
     // this generates a separate chunk (upload.[hash].js) for this route
