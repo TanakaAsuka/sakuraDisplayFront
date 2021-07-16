@@ -26,7 +26,7 @@ const routes = [
     path: '/upload',
     beforeEnter: (to, from, next) => {
       // ...
-      axios.get("http://127.0.0.1:3000/upload")
+      axios.get("http://127.0.0.1:3000/userauth")
       .then(res => {
         console.log(res)
         let {err,msg}=res.data
@@ -38,9 +38,6 @@ const routes = [
           })
           toast.warning(msg)
         }
-
-        
-
       })
       .catch(err => {
         console.error(err); 
