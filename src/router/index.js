@@ -35,10 +35,19 @@ const routes = [{
           console.log(res)
           let {
             err,
-            msg
+            msg,isAdmin
           } = res.data
           if (err == 0) {
-            next()
+            if(isAdmin){
+              next()
+            }else{
+              next({
+                name: "Home"
+              })
+              toast.warning("您不是管理员！")
+            }
+
+            
           } else {
             next({
               name: "Login"
