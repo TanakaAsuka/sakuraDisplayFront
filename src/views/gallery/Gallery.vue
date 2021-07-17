@@ -77,6 +77,7 @@ export default {
         itemSelector: ".grid-item",
         // columnWidth: 35,
         horizontalOrder: true,
+        fitWidth: true
       });
 
       let imgLoad = imagesLoaded(grid, function (instance) {});
