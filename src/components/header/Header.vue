@@ -36,9 +36,10 @@ export default {
         a{
             color: white;
             margin: 0 10px;
+            text-decoration: none;
         }
         .router-link-exact-active{
-            color: orange;
+            color: rgb(253, 63, 127);
         }
     }
 </style>

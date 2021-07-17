@@ -54,7 +54,7 @@ const routes = [{
     // route level code-splitting
     // this generates a separate chunk (upload.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import( /* webpackChunkName: "about" */ '../views/upload/Upload.vue')
+    component: () => import( /* webpackChunkName: "upload" */ '../views/upload/Upload.vue')
   },
   {
     // 如果没登陆，跳去登录页
@@ -95,9 +95,9 @@ const routes = [{
     },
     name: 'Delete',
     // route level code-splitting
-    // this generates a separate chunk (upload.[hash].js) for this route
+    // this generates a separate chunk (delete.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import( /* webpackChunkName: "about" */ '../views/delete/Delete.vue')
+    component: () => import( /* webpackChunkName: "delete" */ '../views/delete/Delete.vue')
   },
   {
     path: '/login',
