@@ -7,6 +7,8 @@
       //PassPattern 长度在6~18之间，只能包含字母、数字和下划线
       const PassPattern ="^[a-zA-Z0-9_]{5,17}$";
 
+      
+
 
       export default {
         nickname:NickPattern,username:UserPattern,password:PassPattern

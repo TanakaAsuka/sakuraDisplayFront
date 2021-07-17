@@ -41,6 +41,8 @@ import "lightgallery/scss/lg-zoom.scss";
 import "lightgallery/scss/lg-autoplay.scss";
 import "lightgallery/scss/lg-fullscreen.scss";
 
+import {HOST} from "../../utils/serveConfig"
+
 export default {
   name: "Gallery",
 
@@ -54,7 +56,7 @@ export default {
   }),
   created() {
     axios
-      .get("http://127.0.0.1:3000/gallery")
+      .get(HOST+"/gallery")
       .then((res) => {
         this.imgList = res.data.images;
         console.log(res);
@@ -112,21 +114,12 @@ body {
   width: 300px;
   margin: 5px;
 
-  .lg-sub-html {
-  display: flex;
-  h4 {
-    flex: 1;
-  }
-  div {
-    width: 120px;
-  }
-}
-}
-// 底部html
 
+}
 
 .lightgallery-vue {
-  width: 82vw;
+  width: 80vw;
+  margin: auto;
   // padding: 0 15px;
 
   a {
