@@ -34,6 +34,7 @@ import lgZoom from "lightgallery/plugins/zoom";
 import autoPlay from "lightgallery/plugins/autoplay";
 import fullScreen from "lightgallery/plugins/fullscreen";
 import Masonry from "masonry-layout";
+import {useToast} from "vue-toastification"
 
 import imagesLoaded from "imagesloaded";
 import "lightgallery/scss/lightgallery.scss";
@@ -42,7 +43,7 @@ import "lightgallery/scss/lg-autoplay.scss";
 import "lightgallery/scss/lg-fullscreen.scss";
 
 import {HOST} from "../../utils/serveConfig"
-
+const toast=useToast()
 export default {
   name: "Gallery",
 
@@ -63,6 +64,7 @@ export default {
         console.log(this.imgList);
       })
       .catch((err) => {
+        toast.error("网络错误，请检查网络后重试")
         console.error(err);
       });
   },
@@ -87,6 +89,7 @@ export default {
 
   mounted() {
     console.log("mounted");
+
     // this.$nextTick().then(function () {});
   },
   methods: {
