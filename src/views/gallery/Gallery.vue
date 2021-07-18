@@ -4,7 +4,6 @@
       v-if="imgList?.length > 0"
       :settings="{ speed: 500, plugins: plugins }"
       :onInit="onInit"
-      :onBeforeSlide="onBeforeSlide"
       class="grid"
       ref="grid"
     >
@@ -27,7 +26,7 @@
 </template>
 
 <script>
-import { ref,onMounted, onUnmounted } from "vue";
+import { ref, nextTick, onMounted, onUnmounted, watch, onUpdated } from "vue";
 import axios from "axios";
 import Lightgallery from "lightgallery/vue";
 import lgZoom from "lightgallery/plugins/zoom";
@@ -45,104 +44,99 @@ import "lightgallery/scss/lg-fullscreen.scss";
 import { HOST } from "../../utils/serveConfig";
 const toast = useToast();
 let next = 0;
+let loading = false;
+const useLoadEffet = (imgList) => {
+  // 加载更多数据时
+  return () => {
+    if (loading) return;
+    loading = true;
+    axios
+      .get(HOST + "/gallery/" + next)
+      .then((res) => {
+        if (res.data.images == null) {
+          toast.warning("到底了...", {
+            maxToasts: 2,
+          });
+          return;
+        }
+        imgList.value = imgList.value.concat(res.data.images);
+        console.log(imgList.value);
+        loading = false;
+        next += 10;
+      })
+      .catch((err) => {
+        loading = false;
+        toast.error("网络错误，请检查网络后重试");
+        console.error(err);
+      });
+  };
+};
+const useScrollEffect = (loadMore) => {
+  return () => {
+    const scrollHeight = document.body.scrollHeight;
+    const scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    const clientHeight = document.documentElement.clientHeight;
+
+    let distance = scrollHeight - scrollTop - clientHeight;
+
+    if (distance < 400) {
+      loadMore();
+    }
+  };
+};
 
 export default {
   name: "Gallery",
-
   components: {
     Lightgallery,
   },
-  data: () => ({
-    plugins: [lgZoom, autoPlay, fullScreen],
-    msnry: {},
-  }),
   setup() {
-    let imgList=ref([])
-    loadMore()
+    let msnry = ref({});
+    let imgList = ref([]);
+    let lightGallery = null;
+    let plugins=ref( [lgZoom, autoPlay, fullScreen])
+    // lightGallery 初始化后将实例赋值给变量
+    const onInit = (detail) => {
+      lightGallery = detail.instance;
+    };
+    // 请求新数据过来时刷新lightGallery
+    watch(imgList, () => {
+      nextTick(() => {
+        lightGallery.refresh();
+      });
+    });
 
-    let loading=false
-
-    function loadMore() {
-      if(loading)return;
-      loading=true
-      axios
-        .get(HOST + "/gallery/" + next)
-        .then((res) => {
-          if(res.data.images==null){
-            toast.warning("到底了...",{
-              maxToasts: 2,
-            })
-            return
-          }
-          imgList.value = imgList.value.concat(res.data.images);
-          console.log("加载了")
-          console.log(res);
-          console.log(imgList.value);
-          loading=false
-          next+=10
-        })
-        .catch((err) => {
-          loading=false
-          toast.error("网络错误，请检查网络后重试");
-          console.error(err);
+    const loadMore = useLoadEffet(imgList);
+    const scrollHandle = useScrollEffect(loadMore);
+    loadMore();
+    onUpdated(() => {
+      nextTick(() => {
+        var grid = document.querySelector(".grid");
+        console.log(grid);
+        const msny = new Masonry(grid, {
+          itemSelector: ".grid-item",
+          // columnWidth: 35,
+          horizontalOrder: true,
+          fitWidth: true,
         });
-    }
-    function scrollHandle() {
-      const scrollHeight = document.body.scrollHeight;
-      const scrollTop =
-        document.documentElement.scrollTop || document.body.scrollTop;
-      const clientHeight = document.documentElement.clientHeight;
 
-      let distance = scrollHeight - scrollTop - clientHeight;
-
-      if (distance < 200) {
-        loadMore();
-      }
-
-      console.log("distance:", distance);
-    }
+        let imgLoad = imagesLoaded(grid, function(instance) {});
+        imgLoad.on("progress", function() {
+          console.log("all images are loaded");
+          msny.layout();
+        });
+      });
+    });
     onMounted(() => {
-      console.log("mounted");
       window.addEventListener("scroll", scrollHandle, false);
     });
-    onUnmounted(()=>{
+    onUnmounted(() => {
       window.removeEventListener("scroll", scrollHandle, false);
-    })
-
-    return {imgList}
-  },
-  created() {},
-  updated() {
-    // this.msnry.layout();
-    this.$nextTick(() => {
-      var grid = document.querySelector(".grid");
-      console.log(grid);
-      const msny = new Masonry(grid, {
-        itemSelector: ".grid-item",
-        // columnWidth: 35,
-        horizontalOrder: true,
-        fitWidth: true,
-      });
-
-      let imgLoad = imagesLoaded(grid, function(instance) {});
-      imgLoad.on("progress", function() {
-        console.log("all images are loaded");
-        msny.layout();
-      });
     });
-  },
 
-  mounted() {
-    // this.$nextTick().then(function () {});
-  },
-  methods: {
-    onInit: () => {
-      console.log("lightGallery has been initialized");
-    },
-    onBeforeSlide: () => {
-      console.log("calling before slide");
-    },
-  },
+    return { imgList, msnry, onInit,plugins };
+  }
 };
 </script>
 <style lang="scss" scoped>
