@@ -22,28 +22,30 @@
       >
         <img class="img-responsive" :src="img.url" />
       </a>
-
     </lightgallery>
   </div>
 </template>
 
 <script>
+import { ref,onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import Lightgallery from "lightgallery/vue";
 import lgZoom from "lightgallery/plugins/zoom";
 import autoPlay from "lightgallery/plugins/autoplay";
 import fullScreen from "lightgallery/plugins/fullscreen";
 import Masonry from "masonry-layout";
-import {useToast} from "vue-toastification"
-
+import { useToast } from "vue-toastification";
 import imagesLoaded from "imagesloaded";
+
 import "lightgallery/scss/lightgallery.scss";
 import "lightgallery/scss/lg-zoom.scss";
 import "lightgallery/scss/lg-autoplay.scss";
 import "lightgallery/scss/lg-fullscreen.scss";
 
-import {HOST} from "../../utils/serveConfig"
-const toast=useToast()
+import { HOST } from "../../utils/serveConfig";
+const toast = useToast();
+let next = 0;
+
 export default {
   name: "Gallery",
 
@@ -52,22 +54,64 @@ export default {
   },
   data: () => ({
     plugins: [lgZoom, autoPlay, fullScreen],
-    imgList: [],
     msnry: {},
   }),
-  created() {
-    axios
-      .get(HOST+"/gallery")
-      .then((res) => {
-        this.imgList = res.data.images;
-        console.log(res);
-        console.log(this.imgList);
-      })
-      .catch((err) => {
-        toast.error("网络错误，请检查网络后重试")
-        console.error(err);
-      });
+  setup() {
+    let imgList=ref([])
+    loadMore()
+
+    let loading=false
+
+    function loadMore() {
+      if(loading)return;
+      loading=true
+      axios
+        .get(HOST + "/gallery/" + next)
+        .then((res) => {
+          if(res.data.images==null){
+            toast.warning("到底了...",{
+              maxToasts: 2,
+            })
+            return
+          }
+          imgList.value = imgList.value.concat(res.data.images);
+          console.log("加载了")
+          console.log(res);
+          console.log(imgList.value);
+          loading=false
+          next+=10
+        })
+        .catch((err) => {
+          loading=false
+          toast.error("网络错误，请检查网络后重试");
+          console.error(err);
+        });
+    }
+    function scrollHandle() {
+      const scrollHeight = document.body.scrollHeight;
+      const scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+
+      let distance = scrollHeight - scrollTop - clientHeight;
+
+      if (distance < 200) {
+        loadMore();
+      }
+
+      console.log("distance:", distance);
+    }
+    onMounted(() => {
+      console.log("mounted");
+      window.addEventListener("scroll", scrollHandle, false);
+    });
+    onUnmounted(()=>{
+      window.removeEventListener("scroll", scrollHandle, false);
+    })
+
+    return {imgList}
   },
+  created() {},
   updated() {
     // this.msnry.layout();
     this.$nextTick(() => {
@@ -77,11 +121,11 @@ export default {
         itemSelector: ".grid-item",
         // columnWidth: 35,
         horizontalOrder: true,
-        fitWidth: true
+        fitWidth: true,
       });
 
-      let imgLoad = imagesLoaded(grid, function (instance) {});
-      imgLoad.on("progress", function () {
+      let imgLoad = imagesLoaded(grid, function(instance) {});
+      imgLoad.on("progress", function() {
         console.log("all images are loaded");
         msny.layout();
       });
@@ -89,8 +133,6 @@ export default {
   },
 
   mounted() {
-    console.log("mounted");
-
     // this.$nextTick().then(function () {});
   },
   methods: {
@@ -111,18 +153,17 @@ body {
   width: 100%;
 }
 .lightgallery-wrap {
+  width: 80vw;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
 }
 .grid-item {
   width: 300px;
   margin: 5px;
-
-
 }
 
 .lightgallery-vue {
-  width: 80vw;
   margin: auto;
   // padding: 0 15px;
 
