@@ -33,7 +33,6 @@ const FilePond = vueFilePond(
   FilePondPluginFileValidateType,
   FilePondPluginImagePreview
 );
-import { ref, onMounted } from "vue";
 
 
 export default {

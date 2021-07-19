@@ -1,23 +1,20 @@
 <template>
-  <Header/>
-  <router-view></router-view>
-
-  
+  <Header />
+  <keep-alive>
+    <router-view></router-view>
+  </keep-alive>
 </template>
 
 <script>
-
 // import Gallery from './views/gallery/Gallery'
-import Header from './components/header/Header.vue'
+import Header from "./components/header/Header.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    Header
-  }
-}
+    Header,
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

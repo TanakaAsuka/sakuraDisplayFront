@@ -63,7 +63,7 @@ const useLoadEffet = (imgList) => {
         imgList.value = imgList.value.concat(res.data.images);
         console.log(imgList.value);
         loading = false;
-        next += 10;
+        next += 30;
       })
       .catch((err) => {
         loading = false;

@@ -13,3 +13,4 @@
       export default {
         nickname:NickPattern,username:UserPattern,password:PassPattern
       }
+      
