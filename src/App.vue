@@ -1,8 +1,7 @@
 <template>
   <Header/>
-  <keep-alive>
-    <router-view></router-view>
-  </keep-alive>
+  <router-view></router-view>
+
   
 </template>
 

@@ -56,6 +56,7 @@ const useLoadEffet = (imgList) => {
         if (res.data.images == null) {
           toast.warning("到底了...", {
             maxToasts: 2,
+            position:"bottom-center"
           });
           return;
         }
@@ -116,7 +117,6 @@ export default {
         console.log(grid);
         const msny = new Masonry(grid, {
           itemSelector: ".grid-item",
-          // columnWidth: 35,
           horizontalOrder: true,
           fitWidth: true,
         });
@@ -167,7 +167,6 @@ body {
 
 .lightgallery-vue {
   margin: auto;
-  // padding: 0 15px;
 
   a {
     display: block;

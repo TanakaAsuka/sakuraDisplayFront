@@ -24,9 +24,12 @@ export default {
 
 <style lang="scss" scoped>
     .header{
+        position: sticky;
+        z-index: 99;
+        top: 0;
         width: 100%;
         height: .5rem;
-        background: rgba(34,34,34,0.85);
+        background: rgb(34,34,34);
         display: flex;
         align-items: center;
         color: white;
