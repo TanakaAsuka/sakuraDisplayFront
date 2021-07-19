@@ -43,7 +43,7 @@ import "lightgallery/scss/lg-fullscreen.scss";
 
 import { HOST } from "../../utils/serveConfig";
 const toast = useToast();
-let next = 20;
+let next = 0;
 let loading = false;
 const useLoadEffet = (imgList) => {
   // 加载更多数据时
@@ -95,7 +95,7 @@ export default {
     let msnry = ref({});
     let imgList = ref([]);
     let lightGallery = null;
-    let plugins=ref( [lgZoom, autoPlay, fullScreen])
+    let plugins = ref([lgZoom, autoPlay, fullScreen]);
     // lightGallery 初始化后将实例赋值给变量
     const onInit = (detail) => {
       lightGallery = detail.instance;
@@ -121,8 +121,8 @@ export default {
           fitWidth: true,
         });
 
-        let imgLoad = imagesLoaded(grid, function(instance) {});
-        imgLoad.on("progress", function() {
+        let imgLoad = imagesLoaded(grid, function (instance) {});
+        imgLoad.on("progress", function () {
           console.log("all images are loaded");
           msny.layout();
         });
@@ -135,8 +135,8 @@ export default {
       window.removeEventListener("scroll", scrollHandle, false);
     });
 
-    return { imgList, msnry, onInit,plugins };
-  }
+    return { imgList, msnry, onInit, plugins };
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -147,14 +147,22 @@ body {
   width: 100%;
 }
 .lightgallery-wrap {
-  width: 80vw;
+  width: 90vw;
   margin: 0 auto;
   display: flex;
   justify-content: center;
 }
-.grid-item {
-  width: 300px;
-  margin: 5px;
+@media screen and (max-width: 900px) {
+  .grid-item {
+    width: 300px;
+    margin: 5px;
+  }
+}
+@media screen and (min-width: 900px) {
+  .grid-item {
+    width: 400px;
+    margin: 10px;
+  }
 }
 
 .lightgallery-vue {
