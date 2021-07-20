@@ -18,6 +18,9 @@ export default {
     setup () {
         
         return {}
+    },
+    activated(){
+        console.log("actived")
     }
 }
 </script>

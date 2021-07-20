@@ -43,7 +43,7 @@ import "lightgallery/scss/lg-fullscreen.scss";
 
 import { HOST } from "../../utils/serveConfig";
 const toast = useToast();
-let next = 0;
+let next = 30;
 let loading = false;
 const useLoadEffet = (imgList) => {
   // 加载更多数据时
