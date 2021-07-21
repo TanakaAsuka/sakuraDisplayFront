@@ -13,11 +13,7 @@
         :data-lg-size="img.widthAndHeight"
         class="gallery-item grid-item"
         :data-src="img.url"
-        data-sub-html="
-        <h4>
-          
-        </h4>
-           "
+        data-sub-html=""
       >
         <img class="img-responsive" :src="img.url" />
       </a>
@@ -27,6 +23,7 @@
 
 <script>
 import { ref, nextTick, onMounted, onUnmounted, watch, onUpdated } from "vue";
+import { useRoute } from "vue-router";
 import axios from "axios";
 import Lightgallery from "lightgallery/vue";
 import lgZoom from "lightgallery/plugins/zoom";
@@ -43,6 +40,7 @@ import "lightgallery/scss/lg-fullscreen.scss";
 
 import { HOST } from "../../utils/serveConfig";
 const toast = useToast();
+
 let next = 30;
 let loading = false;
 const useLoadEffet = (imgList) => {
@@ -56,7 +54,7 @@ const useLoadEffet = (imgList) => {
         if (res.data.images == null) {
           toast.warning("到底了...", {
             maxToasts: 2,
-            position:"bottom-center"
+            position: "bottom-center",
           });
           return;
         }
@@ -72,7 +70,7 @@ const useLoadEffet = (imgList) => {
       });
   };
 };
-const useScrollEffect = (loadMore) => {
+const useScrollEffect = (loadMore, route) => {
   return () => {
     const scrollHeight = document.body.scrollHeight;
     const scrollTop =
@@ -81,8 +79,11 @@ const useScrollEffect = (loadMore) => {
 
     let distance = scrollHeight - scrollTop - clientHeight;
 
-    if (distance < 400) {
-      loadMore();
+    console.log("route:");
+    if (route.path == "/") {
+      if (distance < 400) {
+        loadMore();
+      }
     }
   };
 };
@@ -93,6 +94,7 @@ export default {
     Lightgallery,
   },
   setup() {
+    const route = useRoute();
     let msnry = ref({});
     let imgList = ref([]);
     let lightGallery = null;
@@ -101,6 +103,7 @@ export default {
     const onInit = (detail) => {
       lightGallery = detail.instance;
     };
+
     // 请求新数据过来时刷新lightGallery
     watch(imgList, () => {
       nextTick(() => {
@@ -109,7 +112,7 @@ export default {
     });
 
     const loadMore = useLoadEffet(imgList);
-    const scrollHandle = useScrollEffect(loadMore);
+    const scrollHandle = useScrollEffect(loadMore, route);
     loadMore();
     onUpdated(() => {
       nextTick(() => {
@@ -121,8 +124,8 @@ export default {
           fitWidth: true,
         });
 
-        let imgLoad = imagesLoaded(grid, function (instance) {});
-        imgLoad.on("progress", function () {
+        let imgLoad = imagesLoaded(grid, function(instance) {});
+        imgLoad.on("progress", function() {
           console.log("all images are loaded");
           msny.layout();
         });

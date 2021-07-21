@@ -198,6 +198,7 @@ export default {
           if (err == 0) {
             // 注册成功
             this.handleLogin();
+            toast.clear()
             toast.success("注册成功，请登录!");
           } else {
             toast.error(msg);
@@ -230,19 +231,18 @@ export default {
       }
       // 验证通过
       axios
-        .get(
-          "http://127.0.0.1:3000/login",{
-            params: {
+        .post(
+          "http://127.0.0.1:3000/login",qs.stringify({
               username: this.loginusername,
               password: this.loginpassword,
-            }
-          }
+            })
         )
         .then((res) => {
           console.log(res);
           let {err,msg}=res.data
 
           if(err==0){
+            toast.clear()
             toast.success(msg,{
               timeout: 2000
             });

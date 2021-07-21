@@ -53,6 +53,8 @@ export default {
 </script>
 <style lang="scss">
 .my-pond {
+  width: 80vw;
+  margin: 0 auto;
   font-size: inherit;
 }
 </style>
