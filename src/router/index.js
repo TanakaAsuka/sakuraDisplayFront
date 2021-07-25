@@ -4,6 +4,7 @@ import {
 } from 'vue-router'
 import Home from '../views/gallery/Gallery.vue'
 import axios from "axios"
+import {HOST} from "../utils/serveConfig"
 import {
   useToast
 } from "vue-toastification";
@@ -33,7 +34,7 @@ const routes = [{
     path: '/upload',
     beforeEnter: (to, from, next) => {
       // ...
-      axios.get("http://127.0.0.1:3000/userauth")
+      axios.get(HOST+"/userauth")
         .then(res => {
           console.log(res)
           let {
@@ -76,7 +77,7 @@ const routes = [{
     path: '/delete',
     beforeEnter: (to, from, next) => {
       // ...
-      axios.get("http://127.0.0.1:3000/userauth")
+      axios.get(HOST+"/userauth")
         .then(res => {
           console.log(res)
           let {

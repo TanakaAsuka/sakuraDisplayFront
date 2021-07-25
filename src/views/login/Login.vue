@@ -135,6 +135,7 @@ import axios from "axios";
 import qs from "qs";
 import { useToast } from "vue-toastification";
 import common from "../../utils/common";
+import {HOST} from "../../utils/serveConfig"
 export default {
   data() {
     return {
@@ -185,7 +186,7 @@ export default {
       // 验证通过，提交请求
       axios
         .post(
-          "http://127.0.0.1:3000/register",
+         HOST+ "/register",
           qs.stringify({
             nickname: this.nickname,
             username: this.username,
@@ -232,7 +233,7 @@ export default {
       // 验证通过
       axios
         .post(
-          "http://127.0.0.1:3000/login",qs.stringify({
+          HOST+"/login",qs.stringify({
               username: this.loginusername,
               password: this.loginpassword,
             })

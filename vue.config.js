@@ -8,7 +8,7 @@ module.exports = {
     proxy: {
       //配置跨域
       "/upload": {
-        target: "http://127.0.0.1:3000/upload", //这里应该填写你们真实的后台接口
+        target: "http://127.0.0.1:80/upload", //这里应该填写你们真实的后台接口
         ws: true,
         changOrigin: true, //允许跨域
         pathRewrite: {
