@@ -40,8 +40,6 @@ import "lightgallery/scss/lg-fullscreen.scss";
 
 import { HOST } from "../../utils/serveConfig";
 const toast = useToast();
-
-let next = 30;
 let loading = false;
 const useLoadEffet = (imgList) => {
   // 加载更多数据时
@@ -49,7 +47,7 @@ const useLoadEffet = (imgList) => {
     if (loading) return;
     loading = true;
     axios
-      .get(HOST + "/gallery/" + next)
+      .get(HOST + "/newPost/" )
       .then((res) => {
         if (res.data.images == null) {
           toast.warning("到底了...", {
@@ -61,7 +59,6 @@ const useLoadEffet = (imgList) => {
         imgList.value = imgList.value.concat(res.data.images);
         console.log(imgList.value);
         loading = false;
-        next += 30;
       })
       .catch((err) => {
         loading = false;
@@ -70,26 +67,9 @@ const useLoadEffet = (imgList) => {
       });
   };
 };
-const useScrollEffect = (loadMore, route) => {
-  return () => {
-    const scrollHeight = document.body.scrollHeight;
-    const scrollTop =
-      document.documentElement.scrollTop || document.body.scrollTop;
-    const clientHeight = document.documentElement.clientHeight;
-
-    let distance = scrollHeight - scrollTop - clientHeight;
-
-    console.log("route:");
-    if (route.path == "/") {
-      if (distance < 400) {
-        loadMore();
-      }
-    }
-  };
-};
 
 export default {
-  name: "Gallery",
+  name: "newPost",
   components: {
     Lightgallery,
   },
@@ -112,12 +92,10 @@ export default {
     });
 
     const loadMore = useLoadEffet(imgList);
-    const scrollHandle = useScrollEffect(loadMore, route);
     loadMore();
     onUpdated(() => {
       nextTick(() => {
         var grid = document.querySelector(".grid");
-        console.log(grid);
         const msny = new Masonry(grid, {
           itemSelector: ".grid-item",
           horizontalOrder: true,
@@ -130,12 +108,6 @@ export default {
           msny.layout();
         });
       });
-    });
-    onMounted(() => {
-      window.addEventListener("scroll", scrollHandle, false);
-    });
-    onUnmounted(() => {
-      window.removeEventListener("scroll", scrollHandle, false);
     });
 
     return { imgList, msnry, onInit, plugins };

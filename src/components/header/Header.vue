@@ -5,6 +5,10 @@
                  樱花廊
         </router-link>
 
+        <router-link to="/newPost">
+                 新发布
+        </router-link>
+
         <router-link to="/about">
                  关于
         </router-link>
