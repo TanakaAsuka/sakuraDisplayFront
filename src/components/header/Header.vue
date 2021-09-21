@@ -5,9 +5,9 @@
                  樱花廊
         </router-link>
 
-        <router-link to="/newPost">
+        <!-- <router-link to="/newPost">
                  新发布
-        </router-link>
+        </router-link> -->
 
         <router-link to="/about">
                  关于
@@ -35,13 +35,15 @@ export default {
         z-index: 99;
         top: 0;
         width: 100%;
+        min-width: 375px;
         height: .5rem;
-        background: rgb(34,34,34);
+        // background: rgb(34,34,34);
+        background: linear-gradient(90deg,#232526,#414345);
         display: flex;
         align-items: center;
         color: white;
         padding-left: .25rem;
-        // margin-bottom: .2rem;
+        overflow: hidden;
 
         a{
             color: white;
@@ -49,7 +51,7 @@ export default {
             text-decoration: none;
         }
         .router-link-exact-active{
-            color: rgb(253, 63, 127);
+            color: rgb(243, 55, 118);
         }
     }
 </style>

@@ -1,133 +1,44 @@
 <template>
-  <section class="user">
-    <div class="user_options-container">
-      <div class="user_options-text">
-        <div class="user_options-unregistered">
-          <h2 class="user_unregistered-title">没有账号？</h2>
-          <p class="user_unregistered-text">点击按钮注册成为会员.</p>
-          <button
-            class="user_unregistered-signup"
-            @click="handleRegister"
-            id="signup-button"
-          >
-            注册
-          </button>
-        </div>
-
-        <div class="user_options-registered">
-          <h2 class="user_registered-title">已有账号?</h2>
-          <p class="user_registered-text">点击按钮会员登录.</p>
-          <button
-            class="user_registered-login"
-            ref="user_registered_login"
-            @click="handleLogin"
-            id="login-button"
-          >
-            登录
-          </button>
-        </div>
-      </div>
-
-      <div
-        class="user_options-forms"
-        ref="user_options_forms"
-        id="user_options-forms"
-      >
-        <div class="user_forms-login">
-          <h2 class="forms_title">登录</h2>
-          <form class="forms_form">
-            <fieldset class="forms_fieldset">
-              <div class="forms_field">
-                <input
-                  v-model="loginusername"
-                  type="text"
-                  placeholder="用户名"
-                  class="forms_field-input"
-                  required
-                  autofocus
-                  name="loginusername"
-                />
-              </div>
-              <div class="forms_field">
-                <input
-                  v-model="loginpassword"
-                  type="password"
-                  placeholder="密码"
-                  class="forms_field-input"
-                  required
-                  name="loginpassword"
-                />
-              </div>
-            </fieldset>
-            <div class="forms_buttons">
-              <button type="button" class="forms_buttons-forgot">
-                忘记密码?
-              </button>
-              <div @click="handleSubmitLogin" class="forms_buttons-action">
-                登录
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="user_forms-signup">
-          <h2 class="forms_title">注册</h2>
-          <form class="forms_form">
-            <fieldset class="forms_fieldset">
-              <div class="forms_field">
-                <input
-                  type="text"
-                  placeholder="请输入昵称"
-                  class="forms_field-input"
-                  required
-                  v-model="nickname"
-                  name="nickname"
-                />
-              </div>
-
-              <div class="forms_field">
-                <input
-                  type="text"
-                  placeholder="请输入用户名"
-                  class="forms_field-input"
-                  required
-                  v-model="username"
-                  name="username"
-                />
-              </div>
-              <div class="forms_field">
-                <input
-                  type="password"
-                  placeholder="请输入密码"
-                  class="forms_field-input"
-                  required
-                  v-model="password"
-                  name="password"
-                />
-              </div>
-              <div class="forms_field">
-                <input
-                  type="password"
-                  placeholder="请确认密码"
-                  class="forms_field-input"
-                  required
-                  v-model="repeatpass"
-                  name="repeatpass"
-                />
-              </div>
-            </fieldset>
-            <div class="forms_buttons">
-              <input
-                type="button"
-                value="注册"
-                @click="handleSubmitRegister"
-                class="forms_buttons-action"
-              />
-            </div>
-          </form>
-        </div>
-      </div>
+  <div class="wrap">
+    <div class="title">
+      <h3 :class="titleActive==0?'active':''" @click="loginTitle">登录</h3>
+      <h3>/</h3>
+      <h3 :class="titleActive==1?'active':''" @click="registerTitle">注册</h3>
     </div>
-  </section>
+
+    <div class="content">
+      <div class="login" v-if="titleActive==0">
+        <form action="" method="post">
+          <div class="username">
+            <input type="text" placeholder="请输入用户名" v-model="loginusername" />
+          </div>
+          <div class="password">
+            <input type="password" placeholder="请输入密码" v-model="loginpassword" />
+          </div>
+          <div class="submit" @click="handleSubmitLogin">登录</div>
+        </form>
+      </div>
+
+      <div class="register" v-else>
+        <form action="" method="post">
+          <div class="nickname">
+            <input type="text" placeholder="请输入昵称" v-model="nickname" />
+          </div>
+          <div class="username">
+            <input type="text" placeholder="请输入用户名" v-model="username" />
+          </div>
+          <div class="password">
+            <input type="password" placeholder="请输入密码" v-model="password" />
+          </div>
+          <div class="password">
+            <input type="password" placeholder="请再次输入密码" v-model="repeatpass" />
+          </div>
+          <div class="submit" @click="handleSubmitRegister">注册</div>
+        </form>
+      </div>
+
+    </div>
+  </div>
 </template>
 
 <script>
@@ -135,10 +46,11 @@ import axios from "axios";
 import qs from "qs";
 import { useToast } from "vue-toastification";
 import common from "../../utils/common";
-import {HOST} from "../../utils/serveConfig"
+import { HOST } from "../../utils/serveConfig";
 export default {
   data() {
     return {
+      titleActive:0,
       nickname: "",
       username: "",
       password: "",
@@ -148,11 +60,6 @@ export default {
     };
   },
   methods: {
-    handleRegister() {
-      let userForms = this.$refs.user_options_forms;
-      userForms.classList.remove("bounceRight");
-      userForms.classList.add("bounceLeft");
-    },
     handleSubmitRegister() {
       const toast = useToast();
       // 验证昵称用户名密码
@@ -186,7 +93,7 @@ export default {
       // 验证通过，提交请求
       axios
         .post(
-         HOST+ "/register",
+          HOST + "/register",
           qs.stringify({
             nickname: this.nickname,
             username: this.username,
@@ -198,8 +105,9 @@ export default {
           const { err, msg } = res.data;
           if (err == 0) {
             // 注册成功
-            this.handleLogin();
-            toast.clear()
+            console.log("register-this:",this)
+            this.titleActive=0;
+            toast.clear();
             toast.success("注册成功，请登录!");
           } else {
             toast.error(msg);
@@ -210,10 +118,11 @@ export default {
           console.error(err);
         });
     },
-    handleLogin() {
-      let userForms = this.$refs.user_options_forms;
-      userForms.classList.remove("bounceLeft");
-      userForms.classList.add("bounceRight");
+    registerTitle(){
+      this.titleActive=1
+    },
+    loginTitle(){
+      this.titleActive=0
     },
     handleSubmitLogin() {
       const toast = useToast();
@@ -233,23 +142,24 @@ export default {
       // 验证通过
       axios
         .post(
-          HOST+"/login",qs.stringify({
-              username: this.loginusername,
-              password: this.loginpassword,
-            })
+          HOST + "/login",
+          qs.stringify({
+            username: this.loginusername,
+            password: this.loginpassword,
+          })
         )
         .then((res) => {
           console.log(res);
-          let {err,msg}=res.data
+          let { err, msg } = res.data;
 
-          if(err==0){
-            toast.clear()
-            toast.success(msg,{
-              timeout: 2000
-            });
-            this.$router.push('/')
+          if (err == 0) {
             
-          }else{
+            toast.clear();
+            toast.success(msg, {
+              timeout: 2000,
+            });
+            this.$router.push("/");
+          } else {
             toast.error(msg);
           }
         })
@@ -263,462 +173,66 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font: inherit;
-  vertical-align: baseline;
+.wrap {
+  height: calc(100vh - .5rem);
+  margin: 0 auto;
+  max-width: 550px;
+  min-width: 375px;
 }
-
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
+.content{
+  padding-right: .15rem;
 }
-
-body {
-  line-height: 1;
-}
-
-ol,
-ul {
-  list-style: none;
-}
-
-blockquote,
-q {
-  quotes: none;
-}
-
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
-  content: "";
-  content: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-/**
- * * General variables
- * */
-/**
- * * General configs
- * */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: "Montserrat", sans-serif;
-  font-size: 12px;
-  line-height: 1em;
-}
-
-button {
-  background-color: transparent;
-  padding: 0;
-  border: 0;
-  outline: 0;
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  h3:nth-of-type(2){
+    margin: 0 8px;
+  }
+
+  .active{
+    color: rgb(243, 55, 118);
+  }
 }
 
-input {
-  background-color: transparent;
-  padding: 0;
-  border: 0;
-  outline: 0;
-}
-input[type="submit"] {
-  cursor: pointer;
-}
-input::-moz-placeholder {
-  font-size: 0.136rem;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.016rem;
-  color: #ccc;
-}
-input:-ms-input-placeholder {
-  font-size: 0.136rem;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.016rem;
-  color: #ccc;
-}
-input::placeholder {
-  font-size: 0.136rem;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.016rem;
-  color: #ccc;
+
+
+.username,.password,.nickname,.btn{
+  padding-left: .15rem;
+  padding-right: .15rem;
+  
 }
 
-/**
- * * Bounce to the left side
- * */
-@-webkit-keyframes bounceLeft {
-  0% {
-    transform: translate3d(100%, -50%, 0);
+form input{
+  width: 100%;
+  border: none;
+  height: .5rem;
+  margin-top: .15rem;
+  padding-left: .15rem;
+  background: linear-gradient(90deg,#232526,#414345);
+  color: white;
+  border-radius: .08rem;
+  outline: none;
+  &::placeholder{
+    color: white;
   }
-  50% {
-    transform: translate3d(-30px, -50%, 0);
-  }
-  100% {
-    transform: translate3d(0, -50%, 0);
-  }
+
 }
-@keyframes bounceLeft {
-  0% {
-    transform: translate3d(100%, -50%, 0);
-  }
-  50% {
-    transform: translate3d(-30px, -50%, 0);
-  }
-  100% {
-    transform: translate3d(0, -50%, 0);
-  }
-}
-/**
- * * Bounce to the left side
- * */
-@-webkit-keyframes bounceRight {
-  0% {
-    transform: translate3d(0, -50%, 0);
-  }
-  50% {
-    transform: translate3d(calc(100% + 30px), -50%, 0);
-  }
-  100% {
-    transform: translate3d(100%, -50%, 0);
-  }
-}
-@keyframes bounceRight {
-  0% {
-    transform: translate3d(0, -50%, 0);
-  }
-  50% {
-    transform: translate3d(calc(100% + 30px), -50%, 0);
-  }
-  100% {
-    transform: translate3d(100%, -50%, 0);
-  }
-}
-/**
- * * Show Sign Up form
- * */
-@-webkit-keyframes showSignUp {
-  100% {
-    opacity: 1;
-    visibility: visible;
-    transform: translate3d(0, 0, 0);
-  }
-}
-@keyframes showSignUp {
-  100% {
-    opacity: 1;
-    visibility: visible;
-    transform: translate3d(0, 0, 0);
-  }
-}
-/**
- * * Page background
- * */
-.user {
+
+
+
+.submit{
+  width: 135px;
+  height: 45px;
+  border-radius: .08rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: calc(100vh - 0.5rem);
-  background: #ccc;
-  background-size: cover;
-}
-.user_options-container {
-  position: relative;
-  width: 80%;
-}
-.user_options-text {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  background-color: rgba(34, 34, 34, 0.85);
-  border-radius: 3px;
+  margin: 15px 0 auto auto;
+  background: linear-gradient(90deg,#232526,#414345);
+  color: white;
+  cursor: pointer;
 }
 
-/**
- * * Registered and Unregistered user box and text
- * */
-.user_options-registered,
-.user_options-unregistered {
-  width: 50%;
-  padding: 75px 45px;
-  color: #fff;
-  font-weight: 300;
-}
-
-.user_registered-title,
-.user_unregistered-title {
-  margin-bottom: 15px;
-  font-size: 0.2656rem;
-  line-height: 0.16rem;
-}
-
-.user_unregistered-text,
-.user_registered-text {
-  font-size: 0.13rem;
-  line-height: 1.4em;
-}
-
-.user_registered-login,
-.user_unregistered-signup {
-  margin-top: 30px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  padding: 10px 30px;
-  color: #fff;
-  text-transform: uppercase;
-  line-height: 1em;
-  letter-spacing: 0.032rem;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-}
-.user_registered-login:hover,
-.user_unregistered-signup:hover {
-  color: rgba(34, 34, 34, 0.136);
-  background-color: #ccc;
-}
-
-/**
- * * Login and signup forms
- * */
-.user_options-forms {
-  position: absolute;
-  top: 50%;
-  left: 30px;
-  width: calc(50% - 30px);
-  min-height: 420px;
-  background-color: #fff;
-  border-radius: 3px;
-  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-  transform: translate3d(100%, -50%, 0);
-  transition: transform 0.4s ease-in-out;
-}
-.user_options-forms .user_forms-login {
-  transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
-}
-.user_options-forms .forms_title {
-  margin-bottom: 45px;
-  font-size: 0.24rem;
-  font-weight: 500;
-  line-height: 1em;
-  text-transform: uppercase;
-  color: #e8716d;
-  letter-spacing: 0.016rem;
-}
-.user_options-forms .forms_field:not(:last-of-type) {
-  margin-bottom: 20px;
-}
-.user_options-forms .forms_field-input {
-  width: 100%;
-  border-bottom: 1px solid #ccc;
-  padding: 6px 20px 6px 6px;
-  font-family: "Montserrat", sans-serif;
-  font-size: 0.16rem;
-  font-weight: 300;
-  color: gray;
-  letter-spacing: 0.016rem;
-  transition: border-color 0.2s ease-in-out;
-}
-.user_options-forms .forms_field-input:focus {
-  border-color: gray;
-}
-.user_options-forms .forms_buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 35px;
-}
-.user_options-forms .forms_buttons-forgot {
-  font-family: "Montserrat", sans-serif;
-  letter-spacing: 0.016rem;
-  color: #ccc;
-  text-decoration: underline;
-  transition: color 0.2s ease-in-out;
-}
-.user_options-forms .forms_buttons-forgot:hover {
-  color: #b3b3b3;
-}
-.user_options-forms .forms_buttons-action {
-  background-color: #e8716d;
-  border-radius: 3px;
-  padding: 10px 35px;
-  font-size: 0.16rem;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 300;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.016rem;
-  transition: background-color 0.2s ease-in-out;
-}
-.user_options-forms .forms_buttons-action:hover {
-  background-color: #e14641;
-}
-.user_options-forms .user_forms-signup,
-.user_options-forms .user_forms-login {
-  position: absolute;
-  top: 70px;
-  left: 40px;
-  width: calc(100% - 80px);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out,
-    transform 0.5s ease-in-out;
-}
-.user_options-forms .user_forms-signup {
-  transform: translate3d(120px, 0, 0);
-}
-.user_options-forms .user_forms-signup .forms_buttons {
-  justify-content: flex-end;
-}
-.user_options-forms .user_forms-login {
-  transform: translate3d(0, 0, 0);
-  opacity: 1;
-  visibility: visible;
-}
-
-/**
- * * Triggers
- * */
-.user_options-forms.bounceLeft {
-  -webkit-animation: bounceLeft 1s forwards;
-  animation: bounceLeft 1s forwards;
-}
-.user_options-forms.bounceLeft .user_forms-signup {
-  -webkit-animation: showSignUp 1s forwards;
-  animation: showSignUp 1s forwards;
-}
-.user_options-forms.bounceLeft .user_forms-login {
-  opacity: 0;
-  visibility: hidden;
-  transform: translate3d(-120px, 0, 0);
-}
-.user_options-forms.bounceRight {
-  -webkit-animation: bounceRight 1s forwards;
-  animation: bounceRight 1s forwards;
-}
-
-/**
- * * Responsive 990px
- * */
-@media screen and (max-width: 990px) {
-  .user_options-forms {
-    min-height: 395px;
-  }
-  .user_options-forms .forms_buttons {
-    flex-direction: column;
-  }
-  .user_options-forms .user_forms-login .forms_buttons-action {
-    margin-top: 30px;
-  }
-  .user_options-forms .user_forms-signup,
-  .user_options-forms .user_forms-login {
-    top: 40px;
-  }
-
-  .user_options-registered,
-  .user_options-unregistered {
-    padding: 50px 45px;
-  }
-}
 </style>

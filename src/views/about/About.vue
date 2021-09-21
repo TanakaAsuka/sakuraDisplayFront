@@ -27,7 +27,7 @@
 
 <style lang="scss" scoped>
 .about {
-  padding-left: 35px;
+  padding-left: 15px;
 }
 .content{
   padding-left: 25px;

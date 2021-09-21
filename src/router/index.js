@@ -18,11 +18,11 @@ const routes = [{
       keepAlive:true
     }
   },
-  {
-    path: '/newPost',
-    name: 'NewPost',
-    component: () => import( /* webpackChunkName: "newPost" */ '../views/newPost/NewPost.vue')
-  },
+  // {
+  //   path: '/newPost',
+  //   name: 'NewPost',
+  //   component: () => import( /* webpackChunkName: "newPost" */ '../views/newPost/NewPost.vue')
+  // },
   {
     path: '/about',
     name: 'About',

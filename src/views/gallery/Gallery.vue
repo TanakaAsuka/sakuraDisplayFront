@@ -120,8 +120,8 @@ export default {
         console.log(grid);
         const msny = new Masonry(grid, {
           itemSelector: ".grid-item",
-          horizontalOrder: true,
           fitWidth: true,
+          columnWidth: ".grid-item",
         });
 
         let imgLoad = imagesLoaded(grid, function(instance) {});
@@ -174,7 +174,7 @@ body {
   a {
     display: block;
     img {
-      border-radius: 20px;
+      border-radius: 15px;
     }
   }
 }
