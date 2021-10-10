@@ -12,9 +12,17 @@ module.exports = {
         ws: true,
         changOrigin: true, //允许跨域
         pathRewrite: {
-          "^/upload": "", 
+          "^/upload": "",
         },
       },
+    },
+  },
+
+  pages: {
+    index: {
+      // entry for the page
+      entry: "src/main.js",
+      title: "樱花廊",
     },
   },
 };

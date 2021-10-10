@@ -18,6 +18,8 @@
         <img class="img-responsive" :src="img.url" />
       </a>
     </lightgallery>
+    <Footer/>
+    
   </div>
 </template>
 
@@ -32,6 +34,7 @@ import fullScreen from "lightgallery/plugins/fullscreen";
 import Masonry from "masonry-layout";
 import { useToast } from "vue-toastification";
 import imagesLoaded from "imagesloaded";
+
 
 import "lightgallery/scss/lightgallery.scss";
 import "lightgallery/scss/lg-zoom.scss";
@@ -154,6 +157,8 @@ body {
   margin: 0 auto;
   display: flex;
   justify-content: center;
+  position: relative;
+  padding-bottom: 50px;
 }
 @media screen and (max-width: 900px) {
   .grid-item {

@@ -5,18 +5,19 @@
     <component :is="Component" />
   </keep-alive>
 </router-view>
-  
+<Footer/>
 </template>
 
 <script>
-// import Gallery from "./views/gallery/Gallery";
 import Header from "./components/header/Header.vue";
+import Footer from "./components/footer/Footer.vue";
 
 export default {
   name: "App",
   components: {
     Header,
-    // Gallery,
+    Footer
+
   },
 };
 </script>

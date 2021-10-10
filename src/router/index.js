@@ -124,7 +124,16 @@ const routes = [{
     // this generates a separate chunk (login.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import( /* webpackChunkName: "login" */ '../views/login/Login.vue')
-  }
+  },
+  {
+    // 备案
+    path: '/beian',
+    beforeEnter: (to, from, next) => {
+      location.href="https://beian.miit.gov.cn"
+
+    },
+    name: 'Beian',
+  },
 
 ]
 
